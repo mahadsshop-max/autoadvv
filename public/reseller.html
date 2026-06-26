@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Veiled Adv - Reseller Portal</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #14171f;
+    --panel-2: #1c2030;
+    --border: #262b3d;
+    --text: #e6e9f2;
+    --muted: #8b93a7;
+    --accent: #7df7a5;
+    --accent-2: #6b8cff;
+    --danger: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+  }
+  header {
+    padding: 20px 32px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, #14171f 0%, #0b0d12 100%);
+  }
+  header h1 { margin: 0; font-size: 20px; letter-spacing: 0.5px; }
+  header .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; margin-bottom: 24px;
+  }
+  .panel h2 { margin: 0 0 16px; font-size: 16px; color: var(--text); }
+
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  input, select, textarea {
+    width: 100%; padding: 11px 14px; border-radius: 8px;
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    font-size: 14px; font-family: inherit;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--accent-2); }
+
+  button {
+    padding: 11px 18px; border-radius: 8px; border: none; cursor: pointer;
+    background: var(--accent); color: #0b0d12; font-weight: 600; font-size: 14px;
+    transition: transform 0.06s ease, opacity 0.2s ease;
+  }
+  button:hover { opacity: 0.9; }
+  button:active { transform: translateY(1px); }
+  button.secondary { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .stat { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .stat .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat .value { font-size: 22px; font-weight: 700; margin-top: 6px; color: var(--accent); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; }
+  code {
+    background: #0b0d12; padding: 2px 8px; border-radius: 4px; font-size: 12px;
+    color: var(--accent); border: 1px solid var(--border);
+  }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; }
+  .pill.active { background: rgba(125,247,165,0.15); color: var(--accent); }
+  .pill.dead   { background: rgba(255,107,107,0.15); color: var(--danger); }
+
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; padding: 12px 18px; border-radius: 8px;
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    opacity: 0; transform: translateY(8px); transition: all 0.2s ease;
+    pointer-events: none; z-index: 1000; max-width: 360px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.error { border-color: var(--danger); }
+  .toast.ok { border-color: var(--accent); }
+
+  .login-card { max-width: 420px; margin: 60px auto; }
+  .hidden { display: none !important; }
+  .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+  .price { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+  .price .t { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+  .price .p { font-size: 18px; font-weight: 700; color: var(--accent); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Veiled Adv · Reseller Portal</h1>
+    <div class="sub">Generate keys at 50% off retail. Resellers only.</div>
+  </div>
+  <div id="header-meta" class="sub"></div>
+</header>
+
+<main>
+
+  <!-- LOGIN -->
+  <section id="login-section" class="panel login-card">
+    <h2>Reseller Login</h2>
+    <label for="api-key">API Key</label>
+    <input id="api-key" type="password" placeholder="rsk_..." autocomplete="off" />
+    <div style="margin-top: 14px; display: flex; gap: 10px;">
+      <button id="login-btn">Continue</button>
+      <button class="secondary" id="forget-btn" type="button">Forget saved key</button>
+    </div>
+    <p style="color: var(--muted); font-size: 12px; margin-top: 14px;">
+      Don't have an API key? Contact an admin to be onboarded as a reseller.
+    </p>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard-section" class="hidden">
+
+    <div class="panel">
+      <h2 id="reseller-name">-</h2>
+      <div class="row">
+        <div class="stat"><div class="label">Balance</div><div class="value" id="stat-balance">$0.00</div></div>
+        <div class="stat"><div class="label">Keys Sold</div><div class="value" id="stat-sold">0</div></div>
+        <div class="stat"><div class="label">Total Revenue</div><div class="value" id="stat-revenue">$0.00</div></div>
+      </div>
+      <div class="price-grid" id="price-grid"></div>
+      <p style="color: var(--muted); font-size: 12px; margin-top: 14px;">
+        Need more balance? Contact an admin.
+        <button class="secondary" id="logout-btn" style="float: right;" type="button">Log out</button>
+      </p>
+    </div>
+
+    <div class="panel">
+      <h2>Generate Key</h2>
+      <div class="row">
+        <div>
+          <label for="gen-tier">Tier</label>
+          <select id="gen-tier">
+            <option value="v1">v1 Starter</option>
+            <option value="v2">v2 Professional</option>
+            <option value="v3" selected>v3 Elite Monthly</option>
+            <option value="v3-lifetime">v3 Elite Lifetime</option>
+          </select>
+        </div>
+        <div>
+          <label for="gen-duration">Duration</label>
+          <select id="gen-duration">
+            <option value="1h">1 hour</option>
+            <option value="24h">24 hours</option>
+            <option value="7d">7 days</option>
+            <option value="30d" selected>30 days</option>
+            <option value="lifetime">Lifetime</option>
+          </select>
+        </div>
+        <div style="display: flex; align-items: flex-end;">
+          <button id="generate-btn" style="width: 100%;">Generate</button>
+        </div>
+      </div>
+      <p style="color: var(--muted); font-size: 12px; margin-top: 12px;" id="gen-cost-hint"></p>
+    </div>
+
+    <div class="panel">
+      <h2>Your Keys</h2>
+      <div style="overflow-x: auto;">
+        <table id="keys-table">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Tier</th>
+              <th>Duration</th>
+              <th>Cost</th>
+              <th>Status</th>
+              <th>Used By</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script>
+  const STORAGE_KEY = 'veiled.resellerApiKey';
+  let apiKey = null;
+  let pricing = {};
+
+  const $ = (id) => document.getElementById(id);
+
+  function toast(msg, kind) {
+    const el = $('toast');
+    el.textContent = msg;
+    el.className = 'toast show ' + (kind || '');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { el.className = 'toast'; }, 3000);
+  }
+
+  async function api(path, opts) {
+    opts = opts || {};
+    opts.headers = Object.assign(
+      { 'Content-Type': 'application/json', 'X-Reseller-Key': apiKey },
+      opts.headers || {}
+    );
+    if (opts.body && typeof opts.body !== 'string') opts.body = JSON.stringify(opts.body);
+    const res = await fetch(path, opts);
+    let data;
+    try { data = await res.json(); } catch (e) { data = { success: false, error: 'Bad response' }; }
+    if (!res.ok || !data.success) {
+      const err = new Error(data.error || ('HTTP ' + res.status));
+      err.status = res.status;
+      err.data = data;
+      throw err;
+    }
+    return data;
+  }
+
+  function fmtUSD(n) { return '$' + (Number(n) || 0).toFixed(2); }
+  function fmtDate(ts) { if (!ts) return '-'; return new Date(ts).toLocaleString(); }
+
+  function showLogin() {
+    $('login-section').classList.remove('hidden');
+    $('dashboard-section').classList.add('hidden');
+    $('header-meta').textContent = '';
+  }
+  function showDashboard() {
+    $('login-section').classList.add('hidden');
+    $('dashboard-section').classList.remove('hidden');
+  }
+
+  async function loadDashboard() {
+    try {
+      const me = await api('/api/reseller/me');
+      pricing = me.pricing || {};
+      $('reseller-name').textContent = me.reseller.name;
+      $('header-meta').textContent = me.reseller.id;
+      $('stat-balance').textContent = fmtUSD(me.reseller.balance);
+      $('stat-sold').textContent = me.reseller.totalSold || 0;
+      $('stat-revenue').textContent = fmtUSD(me.reseller.totalRevenue);
+
+      const grid = $('price-grid');
+      grid.innerHTML = '';
+      Object.keys(pricing).forEach((tier) => {
+        const div = document.createElement('div');
+        div.className = 'price';
+        div.innerHTML = '<div class="t">' + tier + '</div><div class="p">' + fmtUSD(pricing[tier]) + '</div>';
+        grid.appendChild(div);
+      });
+      updateCostHint();
+
+      const keys = await api('/api/reseller/keys');
+      renderKeys(keys.keys || []);
+      showDashboard();
+    } catch (err) {
+      if (err.status === 401) {
+        localStorage.removeItem(STORAGE_KEY);
+        apiKey = null;
+        showLogin();
+        toast('Invalid API key', 'error');
+      } else {
+        toast(err.message, 'error');
+      }
+    }
+  }
+
+  function renderKeys(keys) {
+    const tbody = $('keys-table').querySelector('tbody');
+    tbody.innerHTML = '';
+    if (keys.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--muted); padding: 20px;">No keys generated yet.</td></tr>';
+      return;
+    }
+    keys.sort((a, b) => b.createdAt - a.createdAt).forEach((k) => {
+      const tr = document.createElement('tr');
+      const status = k.active ? '<span class="pill active">active</span>' : '<span class="pill dead">revoked/expired</span>';
+      tr.innerHTML =
+        '<td><code>' + k.key + '</code></td>' +
+        '<td>' + k.tier + '</td>' +
+        '<td>' + k.duration + '</td>' +
+        '<td>' + fmtUSD(k.costUSD) + '</td>' +
+        '<td>' + status + '</td>' +
+        '<td>' + (k.usedBy && k.usedBy.length ? k.usedBy.length + ' user(s)' : '-') + '</td>' +
+        '<td>' + fmtDate(k.createdAt) + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function updateCostHint() {
+    const tier = $('gen-tier').value;
+    const cost = pricing[tier];
+    if (cost != null) {
+      $('gen-cost-hint').textContent = 'This will deduct ' + fmtUSD(cost) + ' from your balance.';
+    } else {
+      $('gen-cost-hint').textContent = '';
+    }
+  }
+
+  // events
+
+  $('login-btn').addEventListener('click', async () => {
+    const val = $('api-key').value.trim();
+    if (!val) return toast('Enter your API key', 'error');
+    apiKey = val;
+    try {
+      await api('/api/reseller/me');
+      localStorage.setItem(STORAGE_KEY, apiKey);
+      toast('Logged in', 'ok');
+      await loadDashboard();
+    } catch (err) {
+      apiKey = null;
+      toast(err.message || 'Login failed', 'error');
+    }
+  });
+
+  $('forget-btn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    apiKey = null;
+    $('api-key').value = '';
+    toast('Saved key cleared');
+  });
+
+  $('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    apiKey = null;
+    showLogin();
+  });
+
+  $('gen-tier').addEventListener('change', updateCostHint);
+
+  $('generate-btn').addEventListener('click', async () => {
+    const tier = $('gen-tier').value;
+    const duration = $('gen-duration').value;
+    $('generate-btn').disabled = true;
+    try {
+      const r = await api('/api/reseller/keys/generate', { method: 'POST', body: { tier, duration } });
+      toast('Generated: ' + r.key.key, 'ok');
+      try { await navigator.clipboard.writeText(r.key.key); } catch (e) {}
+      await loadDashboard();
+    } catch (err) {
+      toast(err.message || 'Generation failed', 'error');
+    } finally {
+      $('generate-btn').disabled = false;
+    }
+  });
+
+  // Bootstrap
+  apiKey = localStorage.getItem(STORAGE_KEY);
+  if (apiKey) {
+    $('api-key').value = apiKey;
+    loadDashboard();
+  } else {
+    showLogin();
+  }
+</script>
+</body>
+</html>
