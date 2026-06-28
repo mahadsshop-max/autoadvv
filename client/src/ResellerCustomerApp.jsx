@@ -95,14 +95,14 @@ export default function ResellerCustomerApp() {
   const onNavigate = useCallback(
     (target) => {
       if (target === 'pricing') {
-        toast.info('Contact your reseller to upgrade or get a new key.');
+        toast.info('Contact us to upgrade or get a new key.');
       }
     },
     [toast]
   );
 
   const buySlot = useCallback(() => {
-    toast.info('Extra slots are not available here. Ask your reseller for a higher tier key.');
+    toast.info('Extra slots are not available here. Ask us for a higher tier key.');
   }, [toast]);
 
   if (!ready) {
@@ -126,7 +126,7 @@ export default function ResellerCustomerApp() {
           </div>
           <h1 className="reseller-customer-title">Verify to continue</h1>
           <p className="reseller-customer-sub">
-            Sign in with Discord to unlock the dashboard your reseller set up for you.
+            Sign in with Discord to unlock the dashboard we set up for you.
           </p>
           <button type="button" className="btn reseller-customer-cta" onClick={handleLogin}>
             Verify with Discord
@@ -150,7 +150,7 @@ export default function ResellerCustomerApp() {
           </div>
           <h1 className="reseller-customer-title">Enter your access key</h1>
           <p className="reseller-customer-sub">
-            Paste the key your reseller sent you to open your dashboard.
+            Paste the key we sent you to open your dashboard.
           </p>
           <input
             type="text"
@@ -246,7 +246,7 @@ export default function ResellerCustomerApp() {
           <div className="reseller-customer-redeem-card">
             <h2 style={{ marginBottom: 8 }}>Redeem another key</h2>
             <p style={{ color: 'var(--muted)', marginBottom: 16 }}>
-              Got a new key from your reseller? Paste it below to extend or upgrade your access.
+              Got a new key from us? Paste it below to extend or upgrade your access.
             </p>
             <input
               type="text"
